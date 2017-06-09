@@ -1,8 +1,5 @@
 package com.gmail.andrewgazelka;
 
-/**
- * Created by andrewgazelka on 6/6/17.
- */
 public class PhysicsUtil {
 
     final private static double E_D = 10e9;

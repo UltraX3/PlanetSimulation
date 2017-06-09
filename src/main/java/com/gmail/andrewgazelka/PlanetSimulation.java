@@ -6,9 +6,6 @@ import processing.event.KeyEvent;
 import java.util.Random;
 import java.util.Set;
 
-/**
- * Created by andrewgazelka on 6/6/17.
- */
 public class PlanetSimulation extends PApplet {
 
     // Screen dimensions

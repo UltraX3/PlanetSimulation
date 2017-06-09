@@ -5,9 +5,6 @@ import processing.core.PApplet;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by andrewgazelka on 6/6/17.
- */
 public class SolarSystem {
 
     private double x;
