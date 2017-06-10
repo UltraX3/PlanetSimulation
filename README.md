@@ -1,3 +1,5 @@
+![alt text](https://i.gyazo.com/e719c1e854b990413801cb0a8d7f80f6.png)
+
 # PlanetSimulation
 
 A simple physics engine that shows the interaction of gravity between objects.
