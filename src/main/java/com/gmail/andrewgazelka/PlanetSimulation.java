@@ -16,38 +16,37 @@ public class PlanetSimulation extends PApplet {
     final static private int calcPerFrame = 1000;
 
     // How to draw the object
-    private DrawBehavior drawBehavior;
+    private BodyDrawBehavior drawBehavior;
 
     // The object we are storing bodies in
     private SolarSystem solarSystem;
+    SolarSystemDrawer solarSystemDrawer;
 
     public PlanetSimulation(){
-        this.solarSystem = new SolarSystem(3*141e10,3*141e10,1e2,this);
+        this.solarSystem = new SolarSystem(3*141e10,3*141e10,1e2);
 
         // The behavior as to how to draw the objects
-        this.drawBehavior = new ConcreteCircleDrawBehavior();
+        this.drawBehavior = new PAppletCircleBodyDrawBehavior(this);
 
-        // Think this is good... TODO — QUESTION: would it be better if I implement solarSystem.setBodies(...) and
-        // instantiate the HashMap in the PlanetSimulator constructor?
         Set<Body> bodySet = solarSystem.getBodies();
         // Populate with random the bodies. Modifies bodySet
-        populatePsuedoRandomBodies(bodySet,drawBehavior);
+        populatePsuedoRandomBodies(bodySet);
+        solarSystemDrawer = new MainPAppletSolarSystemDrawer(drawBehavior,this,calcPerFrame);
     }
 
     /**
      * This method populates bodySet with a number of random objects. Most of the stuff here is just crazy numbers and
      * calcs that aren't really important.
      * @param bodySet
-     * @param drawBehavior
      */
-    void populatePsuedoRandomBodies(Set<Body> bodySet, DrawBehavior drawBehavior){
-        Body sun = new Body(1e3, new Point(0,0), 1.989e30,new Point(0,0),drawBehavior,solarSystem);
+    void populatePsuedoRandomBodies(Set<Body> bodySet){
+        Body sun = new Body(1e3, new Point(0,0), 1.989e30,new Point(0,0));
         Random random = new Random();
         for(int i = 0; i < 5; i ++){
             Point position = new Point((1+random.nextFloat())*141e8,(1+random.nextFloat())*141e8);
             double mass = Math.pow(random.nextFloat(),2)*1.989e28;
             Point velocity = new Point((1+random.nextFloat())*2e4,-(1+random.nextFloat())*2e4);
-            Body body = new Body(1,position,mass,velocity,drawBehavior,solarSystem);
+            Body body = new Body(1,position,mass,velocity);
             bodySet.add(body);
         }
         bodySet.add(sun);
@@ -71,19 +70,7 @@ public class PlanetSimulation extends PApplet {
 
     // This method draws to the screen
     public void draw() {
-        background(0, 0, 0);
-        stroke(255,0,0);
-        for(int i = 0; i < calcPerFrame-1; i++){
-            solarSystem.update(false);
-        }
-        solarSystem.update(true);
-        for (Body body : solarSystem.getBodies()) {
-            stroke(0,0,255);
-            float stroke = (float)Math.log(body.getMass()/100000);
-            strokeWeight(stroke);
-            fill(100, 100, 100);
-            body.performDraw(this);
-        }
+        solarSystemDrawer.draw(solarSystem);
     }
 
     @Override
@@ -106,7 +93,7 @@ public class PlanetSimulation extends PApplet {
             case 'r':
                 Set<Body> bodySet = solarSystem.getBodies();
                 bodySet.clear();
-                populatePsuedoRandomBodies(bodySet,drawBehavior);
+                populatePsuedoRandomBodies(bodySet);
         }
     }
 }

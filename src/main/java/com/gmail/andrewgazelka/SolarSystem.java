@@ -1,16 +1,16 @@
 package com.gmail.andrewgazelka;
 
-import processing.core.PApplet;
-
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public class SolarSystem {
+public class SolarSystem implements CoordTransformable2D {
 
     private double x;
     private double y;
     private double dt;
-    private PApplet pApplet;
+    private List<Coupler<Point,Point>> forcesSinceLastUpdate;
 
     private Set<Body> bodies;
 
@@ -20,21 +20,13 @@ public class SolarSystem {
      * @param x
      * @param y
      * @param dt time increment between physics frames. A smaller dt yields more accurate calculations
-     * @param pApplet The applet we are drawing on
      */
-    public SolarSystem(final double x, final double y, double dt, PApplet pApplet){
-
-        /*
-        TODO — QUESTION: Is requiring a pApplet input bad here? I feel this limits versatility of the program, especially if
-        someone _didn't_ want to use a pApplet. ex: What if someone wanted to not have a graphics display at all or
-        use another library besides processing?
-         */
+    public SolarSystem(final double x, final double y, double dt){
 
         this.x = x;
         this.y = y;
         this.dt = dt;
         bodies = new HashSet<Body>();
-        this.pApplet = pApplet;
     }
 
     public double getX() {
@@ -65,17 +57,13 @@ public class SolarSystem {
         return bodies;
     }
 
-    /**
-     *
-     * @param solarMagnitude
-     * @return The length in solar system coordinates (what we defined in the constructor) to screen coordinates)
-     */
-    double solarLengthToScreenLengthX(double solarMagnitude){
-        return (((float) solarMagnitude / x)*pApplet.width);
+
+    public double currentLengthToScreenLengthX(double solarMagnitude, int screenWidth){
+        return (((float) solarMagnitude/ x)*screenWidth);
     }
 
-    double solarLengthToScreenLengthY(double solarMagnitude){
-        return (((float) solarMagnitude / y)*pApplet.height);
+    public double currentLengthToScreenLengthY(double solarMagnitude, int screenHeight){
+        return (((float) solarMagnitude / y)*screenHeight);
     }
 
     /**
@@ -83,40 +71,39 @@ public class SolarSystem {
      * @param solarPoint
      * @return Similar to solarLengthToScreenLength, but returns actual screen coordinates, not just magnitudes.
      */
-    Point solarPointToScreenPoint(Point solarPoint){
-
-        double pointX = (((float) solarPoint.getX() / x)*pApplet.width+pApplet.width/2);
-        double pointY = (((float) solarPoint.getY() / y)*pApplet.height+pApplet.height/2);
-
+    public Point currentPointToScreenPoint(Point solarPoint, int screenWidth, int screenHeight){
+        double pointX = (((float) solarPoint.getX() / x)*screenWidth+screenWidth/2);
+        double pointY = (((float) solarPoint.getY() / y)*screenHeight+screenHeight/2);
         return new Point(pointX,pointY);
+    }
+
+    public List<Coupler<Point, Point>> getForcesSinceLastUpdate() {
+        return forcesSinceLastUpdate; // TODO — QUESTION: Is this a good practice to grab intermediate data from a method?
     }
 
     /**
      * Updates the bodies
-     * @param draw
+     * @param logInformation — Whether to log information to getForces
      */
-    void update(boolean draw){
-        /*
-            TODO — QUESTION: I feel this "boolean draw" makes the program less clean. What if we implemented a solar system
-            that printed out logs of coordinates but didn't draw? Be annoying to constantly put false.
-         */
-
+    void update(boolean logInformation){
+        if(logInformation)
+            forcesSinceLastUpdate = new ArrayList<>();
+        else
+            forcesSinceLastUpdate = null; // There was no information last update
         for(Body body : bodies){
             for(Body externalBody : bodies){
                 if(body != externalBody){ // We are eliminating internal forces
                     Point fog = PhysicsUtil.forceGravMagnitude(body,externalBody);
-                    if(draw){
-                        /*
-                        TODO — QUESTION: This is why I used draw—to be able to draw lines from one coordinate to another.
-                        boolean draw would probably be better as an interface, but still, is repeatedly putting a
-                        blank interface a good practice?
-                         */
-                        Point screenPoint1 = solarPointToScreenPoint(body.getSolarPos());
-                        Point screenPoint2 = solarPointToScreenPoint(externalBody.getSolarPos());
-                        float sw = (float) Math.log10(fog.magnitudeSquared())/50;
-                        if(sw > 0)
-                            pApplet.strokeWeight(sw);
-                        pApplet.line((int)screenPoint1.getX(),(int)screenPoint1.getY(),(int)screenPoint2.getX(),(int)screenPoint2.getY());
+                    if(logInformation){
+                        //Point screenPoint1 = body.getSolarPos();
+                        //Point screenPoint2 = externalBody.getSolarPos();
+                        forcesSinceLastUpdate.add(new Coupler<>(body.getSolarPos(),externalBody.getSolarPos()));
+                        //Point screenPoint1 = solarPointToScreenPoint(body.getSolarPos());
+                        //Point screenPoint2 = solarPointToScreenPoint(externalBody.getSolarPos());
+                        //float sw = (float) Math.log10(fog.magnitudeSquared())/50;
+                        //if(sw > 0)
+                        //    pApplet.strokeWeight(sw);
+                        //pApplet.line((int)screenPoint1.getX(),(int)screenPoint1.getY(),(int)screenPoint2.getX(),(int)screenPoint2.getY());
                     }
                     body.addTempForce(fog,dt);
                 }
