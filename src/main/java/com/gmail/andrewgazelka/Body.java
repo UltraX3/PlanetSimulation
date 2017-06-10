@@ -6,16 +6,15 @@ package com.gmail.andrewgazelka;
 public class Body {
 
     private double radius;
-    private Point solarPos;
+    private Point position;
     private double mass;
-    private Point solarVel;
-    private BodyDrawBehavior drawBehavior;
+    private Point velocity;
 
-    public Body(double radius, Point solarPos, double mass, Point solarVel /*, BodyDrawBehavior drawBehavior*/) {
+    public Body(double radius, Point position, double mass, Point velocity /*, BodyDrawBehavior drawBehavior*/) {
         this.radius = radius;
-        this.solarPos = solarPos;
+        this.position = position;
         this.mass = mass;
-        this.solarVel = solarVel;
+        this.velocity = velocity;
         //this.drawBehavior = drawBehavior;
         /*
         TODO : QUESTION — Should drawBehavior be a parameter of Body? I have moved it
@@ -26,32 +25,32 @@ public class Body {
         return radius;
     }
 
-    public Point getSolarPos() {
-        return solarPos;
+    public Point getPosition() {
+        return position;
     }
 
     public double getMass() {
         return mass;
     }
 
-    public Point getSolarVel() {
-        return solarVel;
+    public Point getVelocity() {
+        return velocity;
     }
 
     public void setRadius(long radius) {
         this.radius = radius;
     }
 
-    public void setSolarPos(Point solarPos) {
-        this.solarPos = solarPos;
+    public void setPosition(Point Pos) {
+        this.position = Pos;
     }
 
     public void setMass(long mass) {
         this.mass = mass;
     }
 
-    public void setSolarVel(Point solarVel) {
-        this.solarVel = solarVel;
+    public void setVelocity(Point Vel) {
+        this.velocity = Vel;
     }
 
     void addTempForce(Point force, double dt){
@@ -61,12 +60,12 @@ public class Body {
         // F * dt / m = dv
         double dv_x = force.getX()*dt / mass;
         double dv_y = force.getY()*dt / mass;
-        solarVel.setX(solarVel.getX()+dv_x);
-        solarVel.setY(solarVel.getY()+dv_y);
+        velocity.setX(velocity.getX()+dv_x);
+        velocity.setY(velocity.getY()+dv_y);
     }
 
     void updatePosition(double dt){
-        solarPos.setX((solarPos.getX()+solarVel.getX()*dt));
-        solarPos.setY((solarPos.getY()+solarVel.getY()*dt));
+        position.setX((position.getX()+ velocity.getX()*dt));
+        position.setY((position.getY()+ velocity.getY()*dt));
     }
 }

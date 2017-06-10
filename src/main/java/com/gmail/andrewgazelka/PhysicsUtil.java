@@ -14,8 +14,8 @@ public class PhysicsUtil {
      */
     public static Point forceGravMagnitude(Body body1, Body body2){
 
-        double distanceX = -body1.getSolarPos().getX()+body2.getSolarPos().getX();
-        double distanceY = -(body1.getSolarPos().getY()-body2.getSolarPos().getY());
+        double distanceX = -body1.getPosition().getX()+body2.getPosition().getX();
+        double distanceY = -(body1.getPosition().getY()-body2.getPosition().getY());
 
         double distance = Math.sqrt(distanceX*distanceX + distanceY*distanceY);
 

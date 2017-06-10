@@ -97,7 +97,7 @@ public class SolarSystem implements CoordTransformable2D {
                     if(logInformation){
                         //Point screenPoint1 = body.getSolarPos();
                         //Point screenPoint2 = externalBody.getSolarPos();
-                        forcesSinceLastUpdate.add(new Coupler<>(body.getSolarPos(),externalBody.getSolarPos()));
+                        forcesSinceLastUpdate.add(new Coupler<>(body.getPosition(),externalBody.getPosition()));
                         //Point screenPoint1 = solarPointToScreenPoint(body.getSolarPos());
                         //Point screenPoint2 = solarPointToScreenPoint(externalBody.getSolarPos());
                         //float sw = (float) Math.log10(fog.magnitudeSquared())/50;

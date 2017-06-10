@@ -1,5 +1,8 @@
 package com.gmail.andrewgazelka;
 
+/**
+ *  This is mainly used to transform coordinates in a certain 2D space to 2D screen coordinates
+ */
 public interface CoordTransformable2D {
 
     double currentLengthToScreenLengthX(double currentMagnitude, int screenWidth);

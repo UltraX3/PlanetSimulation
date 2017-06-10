@@ -11,7 +11,7 @@ public class PAppletCircleBodyDrawBehavior implements BodyDrawBehavior {
     }
 
     public void performDraw(Body body, CoordTransformable2D coordTransformable2D) {
-        Point screenPoint = coordTransformable2D.currentPointToScreenPoint(body.getSolarPos(),applet.width,applet.height);
+        Point screenPoint = coordTransformable2D.currentPointToScreenPoint(body.getPosition(),applet.width,applet.height);
         applet.ellipse((int) screenPoint.getX(), (int) screenPoint.getY(), 10,10);
     }
 }
